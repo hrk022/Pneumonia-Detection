@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X-Ray Pneumonia Detection</title>
+    <link rel="stylesheet" href="/static/style.css">  <!-- Load CSS from static folder -->
+</head>
+<body>
+    <img src="x.jpg">
+    <div class="nevbar">
+        <h1>Pneumonia Detection from chest X-RAY</h1>
+    </div>
+    <div class="container">
+    <h2>X-Ray Pneumonia Detection</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" accept="image/*">
+        <button type="button" onclick="uploadFile()">Upload</button>
+    </form>
+
+    <img id="uploadedImage" style="display:none; width:300px;">
+    <h3 id="result"></h3>
+    </div>
+
+    <script>
+        function uploadFile() {
+            let file = document.getElementById("fileInput").files[0];
+            if (file) {
+                let formData = new FormData();
+                formData.append("file", file);
+
+                fetch("/predict", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("uploadedImage").src = URL.createObjectURL(file);
+                    document.getElementById("uploadedImage").style.display = "block";
+                    document.getElementById("result").innerHTML = "Prediction: " + data.result;
+                })
+                .catch(error => console.error("Error:", error));
+            }
+        }
+    </script>
+</body>
+</html>
